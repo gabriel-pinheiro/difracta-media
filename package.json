@@ -1,0 +1,14 @@
+{
+  "name": "difracta-media",
+  "private": true,
+  "type": "module",
+  "description": "Bundled Media for Difracta: white-on-black clips, their manifest and thumbnails.",
+  "scripts": {
+    "thumbnails": "node scripts/render-thumbnails.mjs",
+    "check": "node scripts/check-manifest.mjs",
+    "measure": "node scripts/measure.mjs"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

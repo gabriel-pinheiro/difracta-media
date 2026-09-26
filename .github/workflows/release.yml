@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: node scripts/check-manifest.mjs
+      - name: Pack manifest, clips and thumbnails
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          archive="difracta-media-${version}.tar.gz"
+          tar --sort=name --owner=0 --group=0 --numeric-owner \
+            -czf "$archive" manifest.json clips thumbnails
+          echo "ARCHIVE=$archive" >> "$GITHUB_ENV"
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "$ARCHIVE" \
+            --title "$GITHUB_REF_NAME" \
+            --notes "Bundled Media ${GITHUB_REF_NAME}: manifest.json, clips/ and thumbnails/ at the root of ${ARCHIVE}."
