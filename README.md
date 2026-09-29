@@ -34,6 +34,12 @@ version and changes only when the shape of an item does. Each item has:
 - `loop`: `true` when the clip loops without a visible seam; left out otherwise.
 - `hit`: `true` when the clip works as a one-shot on a beat; left out
   otherwise. A riser that builds into a drop has neither `loop` nor `hit`.
+- `beats`: how many beats the clip lasts, for a video with a steady pulse:
+  16 for a four-bar loop. Its tempo is `beats × 60 / duration`, so a 7.5 second
+  loop of 16 beats is at 128 BPM. Difracta's Video uses it to follow a song's
+  tempo. Left out on a clip without a pulse to follow, and on every hit.
+- `firstBeat`: the time in seconds of the first beat, when the clip does not
+  start on one; left out for zero. Only with `beats`.
 - `thumbnailAt`: the time in seconds of the frame the thumbnail shows.
 - `width`, `height`: in pixels, measured.
 - `duration`: in seconds, measured; videos only.
@@ -50,6 +56,8 @@ npm run check                 # validates the manifest against clips/ and thumbn
 `check` fails when a clip has no entry or an entry no clip, an id does not match
 its file name, an id or a name repeats, a field is missing or unknown, a flag
 is `false` instead of left out, a measured field disagrees with ffprobe,
+`beats` is on an image or a hit or is not above zero, `firstBeat` has no
+`beats` or falls outside the clip,
 `thumbnailAt` falls outside the clip, or a thumbnail is missing or not 640x360.
 
 ## Adding a clip
@@ -57,7 +65,9 @@ is `false` instead of left out, a measured field disagrees with ffprobe,
 1. Put the file in `clips/`, named `<id>.webm` in lowercase words joined by
    hyphens. White on black, 1920x1080, 30 fps.
 2. Add its entry to `manifest.json`: `id`, `name`, `description`, `notes`,
-   `file` and whichever of `recommended`, `loop` and `hit` hold.
+   `file` and whichever of `recommended`, `loop` and `hit` hold. For a loop or
+   a riser made to a tempo, `beats`: its length in seconds times the tempo,
+   over 60.
 3. Run `npm run measure -- <id>`.
 4. Pick `thumbnailAt`: extract a few frames with ffmpeg and look at them. A
    loop takes a frame from the middle; a hit or a riser takes its peak. Never a

@@ -49,6 +49,16 @@ for (const [index, item] of manifest.items.entries()) {
     if (typeof item.thumbnailAt !== "number" || item.thumbnailAt < 0 || item.thumbnailAt >= measured.duration)
       problem(`${where}: thumbnailAt must be a time from 0 to below the duration, ${measured.duration}`);
   } else if ("duration" in item) problem(`${where}: an image has no duration`);
+  if ("beats" in item) {
+    if (measured.type !== "video") problem(`${where}: only a video has beats`);
+    if (typeof item.beats !== "number" || !(item.beats > 0)) problem(`${where}: beats must be a number above 0`);
+    if (item.hit === true) problem(`${where}: a hit has no beats`);
+  }
+  if ("firstBeat" in item) {
+    if (!("beats" in item)) problem(`${where}: firstBeat needs beats`);
+    if (typeof item.firstBeat !== "number" || !(item.firstBeat > 0) || item.firstBeat >= measured.duration)
+      problem(`${where}: firstBeat must be a time above 0 and below the duration, ${measured.duration}; leave it out for 0`);
+  }
 
   const thumbnail = thumbnailPath(item.id);
   if (!existsSync(thumbnail)) problem(`${where}: thumbnails/${item.id}.png is missing (run npm run thumbnails -- ${item.id})`);

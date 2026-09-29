@@ -21,6 +21,8 @@ export const fieldOrder = [
   "recommended",
   "loop",
   "hit",
+  "beats",
+  "firstBeat",
   "thumbnailAt",
   "width",
   "height",
