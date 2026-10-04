@@ -2,9 +2,9 @@
   "name": "difracta-media",
   "private": true,
   "type": "module",
-  "description": "Bundled Media for Difracta: white-on-black clips, their manifest and thumbnails.",
+  "description": "The Bundled Pack of Difracta: white-on-black clips with their manifest, thumbnails and proxies in .difracta/.",
   "scripts": {
-    "thumbnails": "node scripts/render-thumbnails.mjs",
+    "bake": "node scripts/bake.mjs",
     "check": "node scripts/check-manifest.mjs",
     "measure": "node scripts/measure.mjs"
   },

@@ -17,12 +17,12 @@ jobs:
           node-version: 24
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - run: node scripts/check-manifest.mjs
-      - name: Pack manifest, clips and thumbnails
+      - name: Pack the clips and the .difracta folder
         run: |
           version="${GITHUB_REF_NAME#v}"
           archive="difracta-media-${version}.tar.gz"
           tar --sort=name --owner=0 --group=0 --numeric-owner \
-            -czf "$archive" manifest.json clips thumbnails
+            -czf "$archive" clips .difracta
           echo "ARCHIVE=$archive" >> "$GITHUB_ENV"
       - name: Create the GitHub Release
         env:
@@ -30,4 +30,4 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" "$ARCHIVE" \
             --title "$GITHUB_REF_NAME" \
-            --notes "Bundled Media ${GITHUB_REF_NAME}: manifest.json, clips/ and thumbnails/ at the root of ${ARCHIVE}."
+            --notes "Bundled Pack ${GITHUB_REF_NAME}: clips/ and .difracta/ (pack.json, thumbs/, proxies/) at the root of ${ARCHIVE}."
